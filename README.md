@@ -156,6 +156,38 @@ Use:
 - [PROMPT_build.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/PROMPT_build.md)
 - [loop.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/loop.sh)
 
+Most important:
+
+- `loop.sh` is the executable Bash loop
+- it primarily reads `IMPLEMENTATION_PLAN.md`
+- each loop executes one next step from that implementation plan
+
+#### Create the implementation plan
+
+Run:
+
+- your custom Cursor command for implementation-plan generation
+
+Example:
+
+- see [generate-implementation-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/generate-implementation-plan.md) in [custom tools](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools)
+
+Produces:
+
+- `IMPLEMENTATION_PLAN.md`
+
+What it does:
+
+- reads the roadmap, state, phase plan files, phase research files, and generated phase test files
+- converts them into one ordered execution document for the Ralph loop
+- creates one section per plan task and one section per generated test
+
+Short example of what this looks like:
+
+- `Section 1 — phase-x — 01-01 — Task 1 (Execution)`
+- `Section 2 — phase-x — 01-01 — Task 2 (Execution)`
+- `Section 3 — phase-x — tests-1 — Test 1 (Execution)`
+
 What goes into the handoff:
 
 - the GSD phase tasks
