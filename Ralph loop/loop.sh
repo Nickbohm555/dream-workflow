@@ -62,6 +62,10 @@ ITERATION=0
 while :; do
   ITERATION=$((ITERATION + 1))
   START_HEAD="$(git rev-parse --verify HEAD 2>/dev/null || true)"
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+  LOOP_MSG="$REPO_ROOT/.loop-commit-msg"
+  LOOP_FULL="$REPO_ROOT/.loop-commit-msg.full"
+  rm -f "$LOOP_MSG" "$LOOP_FULL"
   echo "=================================================="
   echo "Ralph loop iteration: $ITERATION"
   echo "Prompt: $PROMPT_FILE"
@@ -71,19 +75,47 @@ while :; do
 
   cat "$PROMPT_FILE" "$AGENTS_FILE" | eval "$AGENT_CMD"
 
-  if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
-    echo "Error: iteration $ITERATION ended with uncommitted changes."
-    echo "Each section must finish with a commit using the required convention."
+  END_HEAD="$(git rev-parse --verify HEAD 2>/dev/null || true)"
+  if [ "$START_HEAD" != "$END_HEAD" ]; then
+    echo "Error: iteration $ITERATION changed git history directly."
+    echo "The agent must not create commits. Write .loop-commit-msg and let loop.sh commit."
     exit 1
   fi
 
-  END_HEAD="$(git rev-parse --verify HEAD 2>/dev/null || true)"
-  if [ "$REQUIRE_COMMIT_PER_ITERATION" = "1" ] && [ "$START_HEAD" = "$END_HEAD" ]; then
+  if [ ! -f "$LOOP_MSG" ]; then
+    if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+      echo "Error: iteration $ITERATION produced changes but did not write .loop-commit-msg."
+      echo "The agent must provide the exact commit subject in .loop-commit-msg."
+      exit 1
+    fi
+  else
+    COMMIT_SUBJECT="$(head -1 "$LOOP_MSG" | tr -d '\r')"
+    if [ -z "$COMMIT_SUBJECT" ]; then
+      echo "Error: .loop-commit-msg is empty."
+      exit 1
+    fi
+
+    if [[ ! "$COMMIT_SUBJECT" =~ ^(feat|fix|test|refactor|perf|chore|docs|style)\([0-9]{2}(-[0-9]{2})?\):\ .+ ]]; then
+      echo "Error: .loop-commit-msg does not match the required convention."
+      echo "Message: $COMMIT_SUBJECT"
+      exit 1
+    fi
+
+    if [ -z "$(git status --porcelain 2>/dev/null)" ]; then
+      echo "Error: .loop-commit-msg exists but there are no file changes to commit."
+      exit 1
+    fi
+
+    printf '%s\n' "$COMMIT_SUBJECT" > "$LOOP_FULL"
+    git add -A
+    git commit -F "$LOOP_FULL"
+    rm -f "$LOOP_MSG" "$LOOP_FULL"
+  fi
+
+  FINAL_HEAD="$(git rev-parse --verify HEAD 2>/dev/null || true)"
+  if [ "$REQUIRE_COMMIT_PER_ITERATION" = "1" ] && [ "$START_HEAD" = "$FINAL_HEAD" ]; then
     echo "Error: iteration $ITERATION did not create a commit."
-    echo "Use one of:"
-    echo "  {type}({phase}-{plan}): {task-name}"
-    echo "  docs({phase}-{plan}): complete [plan-name] plan"
-    echo "  docs({phase}): complete {phase-name} phase"
+    echo "Write .loop-commit-msg so loop.sh can create the required commit."
     exit 1
   fi
 
@@ -93,6 +125,8 @@ while :; do
     echo "Latest commit: $LAST_SUBJECT"
     exit 1
   fi
+
+  git push -u origin "$(git branch --show-current)"
 
   if [ "$MAX_ITERATIONS" -gt 0 ] && [ "$ITERATION" -ge "$MAX_ITERATIONS" ]; then
     echo "Reached max iterations ($MAX_ITERATIONS)."
