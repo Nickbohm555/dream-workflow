@@ -1,4 +1,4 @@
-1. Read `@IMPLEMENTATION_PLAN.md` and find the next incomplete section.
+1. Go to the current section you are working on in `@IMPLEMENTATION_PLAN.md`. Focus only on that section.
 2. Read `@AGENTS.md` when you need build, run, test, or browser instructions.
 3. Implement only the current section. Do not skip ahead.
 4. Before editing, inspect the existing code so you do not rebuild something that already exists.
@@ -11,7 +11,8 @@
    - `{phase}-{plan}-summary`
    Do not include labels, bullets, explanations, markdown, or extra lines in `.loop-commit-msg`.
 7. If the current section is a testing section, update the referenced source test markdown with the actual test result before stopping. Keep the source test file and the current plan section's result notes in sync.
-8. Do not end the iteration with uncommitted changes.
-9. Stop after completing that section and return 20 thumbs up so the user knows we finished.
+8. Before stopping, make sure `Current section to work on` in `@IMPLEMENTATION_PLAN.md` has been moved forward by one if this section completed and that update has not already been made.
+9. Do not end the iteration with uncommitted changes.
+10. Stop after completing that section and return 20 thumbs up so the user knows we finished.
 
 Keep `@AGENTS.md` operational only.
