@@ -78,8 +78,7 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
      - update file-level progress fields such as `Current Test`, `updated`, `Summary`, `Gaps`, or similar bookkeeping when present
      - keep the per-section `Test results` notes in `IMPLEMENTATION_PLAN.md` aligned with what was written back to the source test markdown
    - `## Global Commit Rules` must require:
-     - testing commits use `.loop-commit-msg` with exactly `<plan-id>-test<test-id>`
-     - summary/phase wrap-up commits still use `<plan-id>-summary` if a summary section exists
+     - after each completed test, write `.loop-commit-msg` with exactly one non-empty line in the testing format `<plan-id>-test<test-id>`
      - the executor must not create git commits directly
    - Each section must include:
      - source phase
@@ -105,7 +104,7 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
      7. Update the source test markdown for this exact test with the actual result from the run, including pass/fail status and concise evidence.
      8. Update any file-level bookkeeping in the source test markdown such as `Current Test`, `updated`, `Summary`, and `Gaps` so the file reflects the completed test.
      9. Update this section's `Test results` notes in `IMPLEMENTATION_PLAN.md` with the same observed result summary.
-     10. Write `.loop-commit-msg` with exactly `<plan-id>-test<test-id>`.
+     10. After this test is fully recorded, write `.loop-commit-msg` with exactly one non-empty line: `<plan-id>-test<test-id>`.
 
 7. Empty-state behavior:
    - If no test files are found, still create `IMPLEMENTATION_PLAN.md` with header plus:
