@@ -4,6 +4,7 @@ This repo has two parts:
 
 - `GSD for Cursor/`
 - `Ralph loop/`
+- `custom commands/`
 
 The workflow is simple: use GSD for extensive planning, then hand the scoped work into Ralph for repeated fresh-context execution loops.
 
@@ -12,7 +13,8 @@ The workflow is simple: use GSD for extensive planning, then hand the scoped wor
 ```text
 dream-workflow/
 ├── GSD for Cursor/
-└── Ralph loop/
+├── Ralph loop/
+└── custom commands/
 ```
 
 ## Why this works
@@ -84,8 +86,13 @@ Why it is effective:
 
 Run:
 
+- your custom Cursor command for phase test generation
 - `/gsd/write-tests 1`
 - `/gsd/write-tests all`
+
+Example:
+
+- see [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20commands/test-plan.md) in [custom commands](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20commands)
 
 Produces:
 
@@ -97,6 +104,7 @@ Why it is effective:
 
 - it converts built phase outcomes into simple manual pass/fail test checklists
 - it can process one phase or all phases in order before the Ralph loop starts
+- it keeps the testing extraction logic as a reusable Cursor command instead of an ad hoc prompt
 
 ### 5. Build the Ralph loop inputs
 
