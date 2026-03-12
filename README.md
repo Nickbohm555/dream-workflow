@@ -8,7 +8,7 @@ This repo has two parts:
 
 - `GSD for Cursor/`
 - `Ralph loop/`
-- `custom commands/`
+- `custom tools/`
 
 ## Requirements
 
@@ -23,7 +23,7 @@ The workflow is simple: use GSD for extensive planning, then hand the scoped wor
 dream-workflow/
 ├── GSD for Cursor/
 ├── Ralph loop/
-└── custom commands/
+└── custom tools/
 ```
 
 ## Why this works
@@ -101,7 +101,7 @@ Run:
 
 Example:
 
-- see [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20commands/test-plan.md) in [custom commands](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20commands)
+- see [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md) in [custom tools](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools)
 
 Produces:
 
@@ -124,6 +124,8 @@ Important inputs:
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
 - `.planning/phases/{phase-name}/`
+- [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md)
+- [launch-devtools.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/launch-devtools.sh)
 
 Inside each phase folder, you should have:
 
@@ -132,9 +134,28 @@ Inside each phase folder, you should have:
 - one generated `tests-{phase}.md` file with the feature-level tests for that phase
 - phase `SUMMARY.md` files from completed work as the project moves forward
 
+Tool setup before Ralph:
+
+- make sure the custom Cursor test command logic is available from [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md)
+- make sure the Chrome helper is installed and executable:
+  - `chmod +x "./custom tools/launch-devtools.sh"`
+- launch Chrome remote debugging for the app when browser validation is needed:
+  - `"./custom tools/launch-devtools.sh" http://localhost:5173`
+- confirm the DevTools endpoint is available:
+  - `http://127.0.0.1:9222/json/list`
+
+How Codex uses the Chrome DevTools helper:
+
+- `launch-devtools.sh` opens Chrome with remote debugging enabled on port `9222`
+- the script prints the DevTools target endpoint at `http://127.0.0.1:9222/json/list`
+- Codex or the browser tool connects to that running browser target instead of guessing about frontend behavior from code alone
+- once connected, Codex can inspect the page, navigate flows, click buttons, watch visible results, and use that browser session as part of frontend validation and debugging
+- this makes browser testing in the Ralph loop real interaction with the app, not just static analysis
+
 Why this matters:
 
 - the Ralph loop starts with the roadmap, the state file, the phase tasks, the phase research, and the phase test files already defined
+- the browser validation helper should already be available before Ralph starts if frontend testing is part of the loop
 - `ROADMAP.md` and `STATE.md` still matter during Ralph execution because they need to stay updated as progress moves forward
 - this is the full input set Codex needs before starting the Ralph execution loop
 
