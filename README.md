@@ -2,7 +2,7 @@
 
 ![Dream Workflow banner](assets/dream-banner.svg)
 
-Dream Workflow combines GST with the Ralph loop to 100x development by pairing deep planning with fresh-context execution loops.
+Dream Workflow combines GSD with the Ralph loop to 100x development by pairing deep planning with fresh-context execution loops.
 
 This repo has two parts:
 
