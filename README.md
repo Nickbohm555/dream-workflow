@@ -79,20 +79,23 @@ Why it is effective:
 - it converts roadmap phases into executable tasks
 - it uses research, planning, and plan verification before execution
 
-### 4. Extract the testing scope for the phase
+### 4. Generate phase tests
 
 Run:
 
-- the custom phase test command for your workflow
+- `/gsd/write-tests 1`
+- `/gsd/write-tests all`
 
 Produces:
 
-- the feature list that must be tested for the phase
-- the validation targets for frontend, backend, APIs, or MCP-assisted flows
+- `tests-1.md`, `tests-2.md`, and so on
+- one test file per phase inside that phase folder under `.planning/phases/`
+- test checklists generated from each phase `*-SUMMARY.md`
 
 Why it is effective:
 
-- it makes the test surface explicit before the execution loop starts
+- it converts built phase outcomes into simple manual pass/fail test checklists
+- it can process one phase or all phases in order before the Ralph loop starts
 
 ### 5. Build the Ralph loop inputs
 
@@ -106,7 +109,7 @@ Use:
 What goes into the handoff:
 
 - the GSD phase tasks
-- the features that must be tested for that phase
+- the phase test checklists generated from summaries
 - clear frontend and backend test commands
 - any MCP requirements needed to run or verify the app
 
@@ -142,6 +145,6 @@ The handoff is:
 1. GSD maps the repo
 2. GSD creates requirements and roadmap
 3. GSD creates executable phase plans
-4. testing requirements are extracted for each phase
+4. phase test files are generated from phase summaries
 5. Ralph merges tasks plus testing into one implementation plan
 6. Ralph loops through the work one item at a time with fresh context
