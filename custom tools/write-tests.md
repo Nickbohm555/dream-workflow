@@ -8,13 +8,14 @@ tools:
   glob: true
   grep: true
   bash: true
+  task: true
 ---
 
 <objective>
 Create phase-level test docs from built work summaries using the GSD UAT structure as the template style.
 
 If a phase number is provided, generate tests for that phase only.
-If no phase (or `all`) is provided, process phases in order, one by one.
+If no phase (or `all`) is provided, process all phases in ascending order using up to 4 concurrent subagents (worker pool).
 
 Output files:
 - Phase 1 -> `tests-1.md`
@@ -55,10 +56,11 @@ Determine target set:
 
 If no matching phase directory exists, return a clear error with available phase directories.
 
-## 3. Process phases one by one
+## 3. Generate tests
 
-For each target phase directory, in order:
+### 3A. Single phase mode (`$ARGUMENTS` is numeric)
 
+Process directly in the current agent:
 1. Locate summary:
    ```bash
    ls "{PHASE_DIR}"/*-SUMMARY.md 2>/dev/null
@@ -68,6 +70,37 @@ For each target phase directory, in order:
 4. Write markdown file in same directory as:
    - `tests-{phase_number_without_zero_padding}.md`
    - Examples: `tests-1.md`, `tests-2.md`, `tests-10.md`
+
+### 3B. All phases mode (`$ARGUMENTS` is `all` or empty)
+
+Use a 4-worker subagent pool:
+1. Keep phases sorted ascending.
+2. Launch up to 4 subagents in parallel, each assigned exactly one phase.
+3. When any subagent finishes, immediately assign the next unprocessed phase (maintain max concurrency = 4).
+4. Continue until every target phase is completed or skipped.
+
+Each subagent must:
+1. Handle one `{PHASE_DIR}` only.
+2. Locate `*-SUMMARY.md` in that phase directory.
+3. Build UAT-style tests from observable outcomes.
+4. Write `tests-{phase_number_without_zero_padding}.md` in the same phase directory.
+5. Return structured result:
+   - phase number + phase name
+   - output path (or skipped reason)
+   - test count
+   - source summary filename
+
+Subagent prompt template:
+```text
+Generate phase tests for exactly one phase directory.
+Phase directory: {PHASE_DIR}
+Requirements:
+- Read {PHASE_DIR}/*-SUMMARY.md
+- Produce UAT-style tests based on observable outcomes
+- Write {PHASE_DIR}/tests-{phase_number_without_zero_padding}.md
+- If summary missing, do not fail the batch; return skipped with reason
+- Return: phase, phase_name, output_path_or_skip_reason, test_count, source_summary
+```
 
 Use this file template style, based on `UAT.md`:
 
@@ -124,7 +157,7 @@ After each phase file is written, print:
 - output path
 - test count
 
-When running `all`, continue automatically to next phase until complete.
+When running `all`, print progress whenever each subagent completes, and continue dispatching queued phases automatically until complete.
 
 ## 5. Final response
 
@@ -150,6 +183,7 @@ Processed {N} phase(s).
 - [ ] Iterates phases in ascending order
 - [ ] Reads phase `*-SUMMARY.md` files
 - [ ] Writes `tests-{phase}.md` into each phase directory
+- [ ] Uses 4 concurrent subagents when target is `all`
 - [ ] Uses UAT-style structure from `@~/.cursor/get-shit-done/templates/UAT.md`
 - [ ] Uses non-zero-padded phase number in filename (`tests-1.md`, `tests-2.md`)
 - [ ] Reports created files and skipped phases
