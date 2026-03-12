@@ -96,7 +96,7 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
      7. Update the source test markdown for this exact test with the actual result from the run, including pass/fail status and concise evidence.
      8. Update any file-level bookkeeping in the source test markdown such as `Current Test`, `updated`, `Summary`, and `Gaps` so the file reflects the completed test.
      9. Update this section's `Test results` notes in `IMPLEMENTATION_PLAN.md` with the same observed result summary.
-     10. After this test is fully recorded, write `.loop-commit-msg` with exactly one non-empty line in the format `{phase}-{plan}-test{test-number}`.
+     10. After this test is fully recorded, write `.loop-commit-msg` with exactly one non-empty line in the format `{phase}-{plan}-test{test-number}`. Example: `01-02-test1`.
 
 7. Empty-state behavior:
    - If no test files are found, still create `IMPLEMENTATION_PLAN.md` with header plus:
