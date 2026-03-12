@@ -272,11 +272,44 @@ Why it is effective:
 - the tests are written from the user point of view instead of raw implementation tasks
 - it creates the explicit checklist needed for the testing loop
 
-### 7. Run the testing Ralph loop
+### 7. Generate the testing plan
 
-After the phase test files are generated, run a separate Ralph loop for testing.
+After the phase test files are generated, create a new testing-only `IMPLEMENTATION_PLAN.md`.
 
-This section is the next step in the workflow and will be expanded with the testing-loop details.
+Use:
+
+- [generate-testing-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/generate-testing-plan.md)
+
+Run:
+
+- your custom Cursor command for testing-plan generation
+
+What it does:
+
+- reads the generated phase test files
+- creates one testing section per discovered user-facing test
+- overwrites `IMPLEMENTATION_PLAN.md` with the testing plan
+- keeps the same section-by-section structure so each test gets a clean context window
+
+Why it is effective:
+
+- it separates feature building from feature validation
+- it reuses the same Ralph loop mechanics with a testing-only queue
+- it ensures the next loop only focuses on running and recording tests
+
+### 8. Run the Ralph loop on the testing plan
+
+Run the same Ralph loop again, but now against the testing-only `IMPLEMENTATION_PLAN.md` created in step 7.
+
+This uses the same clean-context, one-section-at-a-time flow, except each section is now a test to execute instead of a feature to build.
+
+### 9. Summary
+
+Keep the final summary extremely short:
+
+- what was built
+- what tests were generated and run
+- any major issues or follow-up items
 
 ## Summary
 
@@ -288,4 +321,6 @@ The handoff is:
 4. Ralph creates a build-only implementation plan from the phase tasks
 5. Ralph loops through the work one item at a time with fresh context
 6. The test command writes phase test files from the generated summaries
-7. A separate Ralph loop runs the user-facing testing flow
+7. A testing-plan command overwrites `IMPLEMENTATION_PLAN.md` with test sections
+8. Ralph runs the testing plan with the same fresh-context loop
+9. The workflow ends with a brief summary
