@@ -59,39 +59,29 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
    - For each extracted test, create exactly one section.
    - Section title format:
      - `## Section N — <phase-slug> — Test <test-id> (Validation)`
-   - Every section must follow the standard section template style:
-     - `**Single goal:**`
-     - `**Details:**`
-     - `**Tech stack and dependencies**`
-     - `**Files and purpose**` table
-     - `**How to test:**`
-     - `**Test results:** (Fill when run.)`
+   - Do not rewrite the full test contents into the section.
+   - Each section should act as a pointer to the source test markdown and clearly tell the executor where to look and what to extract there.
 
 6. Required section content:
-   - Single goal should restate the test's `expected` outcome in one sentence.
-   - Details must include:
-      - source phase and source test file
-      - original test name and id
-      - existing result/severity context when available
-      - `what_changed` from `## Information Needed from the Summary` when present
-      - relevant `testing_notes` from `## Information Needed from the Summary` when present
-    - `Tech stack and dependencies` should be derived from `code_areas` and any implementation clues present in the test markdown.
-    - Files and purpose table must include:
-      - source test file path
-      - key entries from `files_changed`
-      - referenced research file path when present
-      - referenced context file path when present
-    - Pull section content directly from the test markdown whenever possible:
-      - use `expected` for `Single goal`
-      - use `what_changed`, `testing_notes`, and test metadata for `Details`
-      - use `files_changed` for `Files and purpose`
-      - use `code_areas` for `Tech stack and dependencies`
-    - How to test should provide manual verification steps in plain language, based on the extracted expected behavior.
-    - Steps for each section must include:
-      1. Load the source test file, the phase research file, and the phase context file when present.
-      2. Extract `expected`, `what_changed`, `files_changed`, `code_areas`, and `testing_notes` from the test markdown and use them to build the section content.
-      3. Treat the expected behavior in the test as the validation target.
-      4. Execute the validation steps in order and record only directly observed outcomes in `Test results`.
+   - Each section must include:
+     - source phase
+     - source test file path
+     - test id and test name
+     - referenced research file path when present
+     - referenced context file path when present
+   - Each section must explicitly tell the executor to look in the source test markdown for:
+     - the test's `expected` field
+     - any `result`, `reported`, `severity`, and `reason` fields
+     - `what_changed`
+     - `files_changed`
+     - `code_areas`
+     - `testing_notes`
+   - Steps for each section must include:
+     1. Load the source test file, the phase research file, and the phase context file when present.
+     2. In the source test file, locate the target test by id/name.
+     3. Extract the test's `expected`, `result`, `reported`, `severity`, and `reason` fields from that test block.
+     4. Extract `what_changed`, `files_changed`, `code_areas`, and `testing_notes` from `## Information Needed from the Summary` when present.
+     5. Use the extracted information from the source test markdown to execute and record the validation. Do not duplicate the full test content into `IMPLEMENTATION_PLAN.md`.
 
 7. Empty-state behavior:
    - If no test files are found, still create `IMPLEMENTATION_PLAN.md` with header plus:
