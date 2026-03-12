@@ -78,6 +78,7 @@ Why it is effective:
 
 - it converts roadmap phases into executable tasks
 - it uses research, planning, and plan verification before execution
+- if the plan is not clear enough, you can run `/gsd/discuss-phase {X}` and then rerun `/gsd/plan-phase {X}` until the phase plan is right
 
 ### 4. Generate phase tests
 
@@ -90,7 +91,7 @@ Produces:
 
 - `tests-1.md`, `tests-2.md`, and so on
 - one test file per phase inside that phase folder under `.planning/phases/`
-- test checklists generated from each phase `*-SUMMARY.md`
+- test checklists generated from each phase `*-SUMMARY.md` based on the user-visible features and outcomes delivered in that phase, not the raw implementation tasks
 
 Why it is effective:
 
