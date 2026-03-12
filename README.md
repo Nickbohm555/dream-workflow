@@ -1,44 +1,36 @@
 # dream-workflow
 
-This repository now contains four working areas:
+This repo has two parts:
 
-- `GSD for Cursor/`: the Cursor adaptation of GSD, moved in from `gsd-for-cursor`
-- `Ralph loop/`: the loop workflow files moved in from `my-ralph`
-- `custom-commands/`: local custom Cursor command files
-- `custom-skills/`: local custom skill definitions
+- `GSD for Cursor/`
+- `Ralph loop/`
+
+The workflow is simple: use GSD for extensive planning, then hand the scoped work into Ralph for repeated fresh-context execution loops.
 
 ## Structure
 
 ```text
 dream-workflow/
 ├── GSD for Cursor/
-├── Ralph loop/
-├── custom-commands/
-└── custom-skills/
+└── Ralph loop/
 ```
 
-## Project roadmap
+## Why this works
 
-This is the starting workflow I use to complete projects in Cursor.
+It pairs extensive planning with an agent loop where each run starts with fresh context and a limited, specific task.
 
-### Step 1: Start in Cursor with GSD
+- GSD is effective because it forces codebase mapping, requirements, roadmap creation, and phase planning before execution.
+- Ralph is effective because each loop works on a narrow item, follows explicit run and test instructions, and avoids context drift.
 
-I start with `GSD for Cursor/`, which is the cloned Get Shit Done context-engineering repo adapted for Cursor. The first practical setup step is installing its commands and subagents into Cursor so the `/gsd/...` workflow is available inside the editor.
+## Handoff process
 
-### Step 2: Map the codebase first
+### 1. Map the codebase
 
-Before planning work in an existing project, I use the `map-codebase` command from the GSD command set:
+Run:
 
-- Command: `/gsd/map-codebase`
-- Source: [map-codebase.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/GSD%20for%20Cursor/src/commands/gsd/map-codebase.md)
+- `/gsd/map-codebase`
 
-What it does:
-
-- It analyzes the current codebase with parallel `gsd-codebase-mapper` agents.
-- It writes the output directly into `.planning/codebase/`.
-- It is designed for brownfield repos, unfamiliar codebases, onboarding, and refreshes after large changes.
-
-What it produces:
+Produces:
 
 - `.planning/codebase/STACK.md`
 - `.planning/codebase/INTEGRATIONS.md`
@@ -48,363 +40,108 @@ What it produces:
 - `.planning/codebase/TESTING.md`
 - `.planning/codebase/CONCERNS.md`
 
-How it works:
+Why it is effective:
 
-- It checks whether a previous `.planning/codebase/` map already exists.
-- It creates the `.planning/codebase/` directory.
-- It spawns 4 parallel `gsd-codebase-mapper` agents.
-- Each agent owns a focus area and writes files directly instead of sending big summaries back to the orchestrator.
-- The orchestrator then verifies that all 7 files exist, checks line counts, and offers the next step.
+- it creates a grounded map of the existing repo before planning starts
 
-The mapping split is:
+### 2. Initialize the project
 
-- Tech mapper: `STACK.md` and `INTEGRATIONS.md`
-- Architecture mapper: `ARCHITECTURE.md` and `STRUCTURE.md`
-- Quality mapper: `CONVENTIONS.md` and `TESTING.md`
-- Concerns mapper: `CONCERNS.md`
+Run:
 
-Why I do this first:
+- `/gsd/new-project`
 
-- It gives me a grounded picture of the repo before I start shaping work.
-- It marks up the important files, structure, conventions, integrations, and risk areas in reusable planning docs.
-- It gives later commands a stable context base instead of relying on memory or a shallow scan.
-
-### Step 3: Run new-project after the map
-
-Once the codebase is mapped, I run the project initialization command:
-
-- Command: `/gsd/new-project`
-- Source: [new-project.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/GSD%20for%20Cursor/src/commands/gsd/new-project.md)
-
-What it does:
-
-- It initializes the project through one flow: questioning, optional research, requirements definition, and roadmap creation.
-- It creates the planning artifacts that the rest of the workflow uses.
-- It is the handoff from an idea or repo into a buildable plan.
-
-What it asks:
-
-- First, it checks whether the project is already initialized.
-- It initializes git in the current directory if needed.
-- It detects whether code already exists and whether a codebase map already exists.
-- If it sees an existing codebase without a map, it asks whether to run `map-codebase` first.
-- It then asks deep project questions starting with: "What do you want to build?"
-- It follows up to clarify scope, motivation, constraints, vague terms, and what success should look like.
-- It asks for workflow preferences such as mode, planning depth, parallel execution, git tracking, research, plan-checking, verifier usage, and model profile.
-- It asks whether to run research before requirements.
-- It asks the user to scope feature categories into v1, v2, or out of scope.
-- It asks for roadmap approval before committing the roadmap.
-
-What it produces:
+Produces:
 
 - `.planning/PROJECT.md`
 - `.planning/config.json`
-- `.planning/research/` if research is enabled
 - `.planning/REQUIREMENTS.md`
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
+- `.planning/research/` when research is enabled
 
-### Step 4: Understand the new-project logic
+Why it is effective:
 
-The command runs in a structured sequence:
+- it turns the repo or idea into requirements, phases, and project memory
 
-1. Setup and brownfield detection.
-2. Deep questioning until there is enough context to write `PROJECT.md`.
-3. Write and commit `PROJECT.md`.
-4. Collect workflow settings and write `config.json`.
-5. Optionally run domain research in parallel.
-6. Turn the project idea and research into scoped requirements.
-7. Spawn a roadmapper to convert requirements into phases with success criteria.
-8. Ask for approval, revise if needed, then commit the roadmap artifacts.
+### 3. Plan the phase
 
-### Step 5: Subagents called by new-project
+Run:
 
-If research is enabled, `new-project` calls these subagents:
+- `/gsd/plan-phase 1`
 
-- `gsd-project-researcher`
-- `gsd-research-synthesizer`
-- `gsd-roadmapper`
+Produces:
 
-What the research agents produce:
+- phase `RESEARCH.md` when needed
+- one or more phase `PLAN.md` files
 
-- 4 parallel `gsd-project-researcher` runs create:
-  - `.planning/research/STACK.md`
-  - `.planning/research/FEATURES.md`
-  - `.planning/research/ARCHITECTURE.md`
-  - `.planning/research/PITFALLS.md`
-- The `gsd-research-synthesizer` then reads those files and produces:
-  - `.planning/research/SUMMARY.md`
+Why it is effective:
 
-What the roadmapper produces:
+- it converts roadmap phases into executable tasks
+- it uses research, planning, and plan verification before execution
 
-- The `gsd-roadmapper` reads `PROJECT.md`, `REQUIREMENTS.md`, `SUMMARY.md` when present, and `config.json`.
-- It writes:
-  - `.planning/ROADMAP.md`
-  - `.planning/STATE.md`
-- It also updates requirement traceability in `.planning/REQUIREMENTS.md`.
+### 4. Extract the testing scope for the phase
 
-What those agent outputs are for:
+Run:
 
-- `PROJECT.md` captures the actual product context.
-- `config.json` controls how the workflow behaves.
-- `research/*` gives domain evidence, standard patterns, stack choices, feature expectations, and pitfalls.
-- `REQUIREMENTS.md` turns ideas into atomic, testable requirements.
-- `ROADMAP.md` turns requirements into ordered phases.
-- `STATE.md` becomes project memory for later GSD steps.
+- the custom phase test command for your workflow
 
-### Step 6: End state of initialization
+Produces:
 
-At the end of this step, the project is initialized and ready for the next GSD action:
+- the feature list that must be tested for the phase
+- the validation targets for frontend, backend, APIs, or MCP-assisted flows
 
-- `/gsd/discuss-phase 1` to clarify implementation approach
-- or `/gsd/plan-phase 1` to go straight into execution planning
+Why it is effective:
 
-This is the front end of how I complete projects: install GSD into Cursor, map the codebase, initialize the project with `new-project`, and leave the repo with concrete planning artifacts instead of loose notes.
+- it makes the test surface explicit before the execution loop starts
 
-### Step 7: Run plan-phase
+### 5. Build the Ralph loop inputs
 
-After initialization, the next planning step is usually:
-
-- Command: `/gsd/plan-phase 1`
-- Source: [plan-phase.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/GSD%20for%20Cursor/src/commands/gsd/plan-phase.md)
-
-What it does:
-
-- It creates executable phase plans for one roadmap phase.
-- Its default flow is research, then planning, then plan verification.
-- It turns a roadmap phase into one or more `PLAN.md` execution prompts that downstream execution commands can run.
-- It can also reuse existing research, skip research, skip verification, or run in gap-closure mode from prior verification failures.
-
-What it reads before planning:
-
-- `.planning/ROADMAP.md`
-- `.planning/STATE.md`
-- `.planning/REQUIREMENTS.md` if present
-- phase `CONTEXT.md` if present
-- phase `RESEARCH.md` if present
-- phase verification artifacts in `--gaps` mode
-
-How it interacts with me:
-
-- If I do not pass a phase number, it detects the next unplanned phase.
-- If phase research already exists, it tells me it will reuse it unless I force re-research.
-- If plans already exist for the phase, it asks whether to continue planning, view them, or replan from scratch.
-- If the phase researcher gets blocked, it offers choices like giving more context, skipping research, or aborting.
-- If the planner hits a checkpoint, the command brings that checkpoint back into the main context so I can answer and continue.
-- If the plan checker finds issues, the command shows the issues, sends them back to the planner, and repeats this loop up to three times.
-- If three checker iterations still leave issues, it asks whether to force proceed, provide guidance, or abandon the plan run.
-
-What it produces:
-
-- A phase directory under `.planning/phases/`
-- A phase research file when research is used:
-  - `{phase}-RESEARCH.md`
-- One or more executable phase plans:
-  - `{phase}-{plan}-PLAN.md`
-
-What the plan files contain:
-
-- Frontmatter for wave ordering, dependencies, files modified, and autonomy
-- Tasks written as execution instructions, not vague notes
-- Verification criteria
-- `must_haves` derived from the phase goal for goal-backward checking
-
-The planning logic:
-
-1. Validate that `.planning/` exists and resolve the configured model profile.
-2. Parse the phase argument and flags.
-3. Validate the phase against `ROADMAP.md`.
-4. Create the phase directory if needed.
-5. Run phase research unless it is skipped, disabled, already present, or bypassed by `--gaps`.
-6. Inline all required context and spawn the planner.
-7. Read the created plans and send them to the plan checker.
-8. If issues are found, run a revision loop until verification passes or the retry limit is hit.
-9. Finish by presenting a wave-by-wave summary and the next execution command.
-
-### Step 8: Subagents used by plan-phase
-
-`/gsd/plan-phase` uses these subagents:
-
-- `gsd-phase-researcher`
-- `gsd-planner`
-- `gsd-plan-checker`
-
-What each one does:
-
-- `gsd-phase-researcher`
-  - Researches how to implement the specific phase well
-  - Uses current docs and ecosystem sources
-  - Writes a single phase research artifact consumed by the planner:
-    - `{phase}-RESEARCH.md`
-  - Focuses on standard stack, patterns, pitfalls, and code examples
-
-- `gsd-planner`
-  - Converts the phase into executable plan files
-  - Breaks the phase into small plans with 2 to 3 tasks where possible
-  - Builds dependency graphs and execution waves
-  - Derives `must_haves` from the phase goal
-  - Can run in standard mode, gap-closure mode, or revision mode
-
-- `gsd-plan-checker`
-  - Verifies that the plans will actually achieve the phase goal before execution
-  - Checks requirement coverage, task completeness, dependency correctness, key wiring between artifacts, scope sanity, and verification derivation
-  - Returns either `VERIFICATION PASSED` or a structured issue list for revision
-
-What comes out of the full loop:
-
-- A researched phase, if research was needed
-- A set of executable plan prompts for the phase
-- Verified dependency and wave structure for execution order
-- A checked plan set that is ready for:
-  - `/gsd-execute-phase {X}`
-
-Why this step matters:
-
-- `ROADMAP.md` is still high level.
-- `plan-phase` is the step that turns a roadmap phase into concrete, runnable execution prompts.
-- It also creates a back-and-forth planning loop with the user instead of silently making assumptions when research or checker feedback exposes ambiguity.
-
-### Step 9: Hand off from GSD into the Ralph loop
-
-Once `plan-phase` is done, this is where `Ralph loop/` comes into play.
-
-At that point, I already have:
-
-- the roadmap phases from GSD
-- the executable task plans for each phase
-- the phase-by-phase structure for how the work should be built
-
-The next thing I do is generate the testing view of that same work.
-
-### Step 10: Create the testing list for each phase
-
-After GSD planning, I run a custom command that works through each phase and extracts what needs to be tested.
-
-The goal is to create, for each phase:
-
-- the list of implementation tasks coming from the GSD-created plans
-- the list of features and behaviors that need to be tested for that phase
-
-So now each phase has two parallel tracks:
-
-- build tasks
-- test coverage targets
-
-This makes the execution loop much stricter. I am not only asking "what do we need to build?" I am also asking "what exactly must be verified after this phase is built?"
-
-### Step 11: Build the Ralph loop inputs
-
-The Ralph loop is driven by a small set of operating files:
+Use:
 
 - [AGENTS.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/AGENTS.md)
 - [IMPLEMENTATION_PLAN.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/IMPLEMENTATION_PLAN.md)
 - [PROMPT_build.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/PROMPT_build.md)
 - [loop.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/loop.sh)
 
-How I use them:
+What goes into the handoff:
 
-- `AGENTS.md`
-  - defines how the app should be run
-  - defines how frontend and backend testing should be run
-  - defines any required MCPs, external services, or operator notes the loop needs
-  - acts as the runtime contract for the build agent
+- the GSD phase tasks
+- the features that must be tested for that phase
+- clear frontend and backend test commands
+- any MCP requirements needed to run or verify the app
 
-- `IMPLEMENTATION_PLAN.md`
-  - becomes the working queue
-  - references the tasks already created from the GSD phase plans
-  - also includes the test expectations and feature-verification checklist for each phase
-  - turns the planned work into a single ordered execution list
+Why it is effective:
 
-- `PROMPT_build.md`
-  - tells the agent how to execute the current item
-  - keeps the loop focused on implementation plus validation
+- it merges build work and test work into one ordered execution queue
+
+### 6. Run the Ralph loop
+
+Run:
 
 - `loop.sh`
-  - runs the loop repeatedly
-  - feeds the agent the prompt, the operational rules, and the current implementation state
-  - keeps moving item by item until the queue is done
 
-### Step 12: Merge GSD tasks with phase testing requirements
+Each loop does this:
 
-This is the key part of the handoff.
+1. Read `AGENTS.md`
+2. Read the next item in `IMPLEMENTATION_PLAN.md`
+3. Execute that one scoped task
+4. Run the required validation
+5. Mark the item complete
+6. Start the next loop with fresh context
 
-The Ralph loop does not replace the GSD planning artifacts. It operationalizes them.
+Why it is effective:
 
-What gets merged into `IMPLEMENTATION_PLAN.md`:
+- each loop starts clean
+- each loop has a specified task
+- the agent is constrained by explicit run, test, and verification rules
 
-- the task list created by GSD for a given phase
-- the set of features that must be tested for that phase
-- the commands needed to validate those features
-- any frontend and backend test instructions
-- any MCP requirements needed to run or verify the system correctly
+## Summary
 
-So instead of having one artifact for planning and another vague idea of testing, the Ralph loop creates one execution queue that combines:
+The handoff is:
 
-- build work
-- test work
-- run instructions
-- verification expectations
-
-### Step 13: How the Ralph loop actually runs
-
-Once that merged implementation plan exists, I work through it one item at a time.
-
-The loop behavior is:
-
-1. Read `AGENTS.md` for operational rules.
-2. Read `IMPLEMENTATION_PLAN.md` for the next task or verification item.
-3. Execute the current item using the build prompt.
-4. Run the required validation for that item.
-5. Confirm that the feature or behavior is actually tested.
-6. Mark the item complete and move to the next one.
-7. Repeat until the full list is complete.
-
-This is why the implementation plan becomes large. It is not only a build backlog. It is the combined list of:
-
-- tasks from each GSD phase
-- test requirements for each phase
-- verification steps for each feature
-
-The loop keeps iterating until everything in that combined list is completed.
-
-### Step 14: How I think about testing inside the Ralph loop
-
-I try to make testing explicit before the loop starts.
-
-That usually means writing clear instructions for:
-
-- frontend testing
-- backend testing
-- any browser or UI verification flow
-- any API or service validation flow
-- any MCPs needed to inspect, automate, or verify behavior
-
-The practical goal is that the loop should not have to guess how to test. The testing commands, environments, and tool requirements should already be stated in `AGENTS.md`, and the specific test targets should already be listed in `IMPLEMENTATION_PLAN.md`.
-
-This is the point of the Ralph loop in my workflow:
-
-- GSD decides what should be built and in what order
-- the custom test command extracts what must be tested
-- Ralph turns both into a repeatable execution loop that builds and verifies the project until the whole plan is done
-
-## Ralph loop contents
-
-The `Ralph loop/` folder currently includes:
-
-- `AGENTS.md`
-- `IMPLEMENTATION_PLAN.md`
-- `PROMPT_build.md`
-- `loop.sh`
-
-## Custom folders
-
-The custom folders currently include:
-
-- `custom-commands/`: `cyberpunk-readme.md`, `ralph-merge.md`, `ralph-start.md`, `section-brainstorm.md`, `section-template.md`, and `test-plan.md`
-- `custom-skills/`: the `playwright/` skill
-
-## Next steps
-
-- Expand this README with setup and usage notes for all four folders
-- Add any missing Ralph loop documents if the workflow grows beyond the current four files
-- Keep this repo focused on these four directories only
+1. GSD maps the repo
+2. GSD creates requirements and roadmap
+3. GSD creates executable phase plans
+4. testing requirements are extracted for each phase
+5. Ralph merges tasks plus testing into one implementation plan
+6. Ralph loops through the work one item at a time with fresh context
