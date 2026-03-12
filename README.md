@@ -70,6 +70,21 @@ Produces:
 - `.planning/STATE.md`
 - `.planning/research/` when research is enabled
 
+Why these files matter:
+
+- `PROJECT.md` captures what the product is and what matters most
+- `REQUIREMENTS.md` is one of the most important files because it turns the idea into specific capabilities that must be built
+- `ROADMAP.md` groups those requirements into ordered phases
+- `STATE.md` becomes the running memory of progress and current position
+- `research/` adds domain and implementation context when the project needs it
+
+Build-up tree:
+
+- `PROJECT.md` -> defines the product
+- `REQUIREMENTS.md` -> defines what must be delivered
+- `ROADMAP.md` -> defines phase order from those requirements
+- `STATE.md` -> tracks where execution currently is
+
 Why it is effective:
 
 - it turns the repo or idea into requirements, phases, and project memory
@@ -84,6 +99,14 @@ Produces:
 
 - phase `RESEARCH.md` when needed
 - one or more phase `PLAN.md` files
+
+Uses from Section 2:
+
+- `ROADMAP.md` to decide which phase is being planned
+- `REQUIREMENTS.md` to know what the phase must actually cover
+- `STATE.md` to know the current project position
+- `PROJECT.md` and `config.json` as supporting context
+- `RESEARCH.md` or `CONTEXT.md` when extra phase guidance exists
 
 Why it is effective:
 
