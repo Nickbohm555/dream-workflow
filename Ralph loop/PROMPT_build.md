@@ -8,6 +8,11 @@
    - any short summary needed for the phase
    - roadmap or progress notes if the section requires them
    - the completion state of the section
-7. Stop after completing that section so the next loop starts with fresh context on the next section.
+7. Record the section in git before stopping:
+   - task execution section: `{type}({phase}-{plan}): {task-name}`
+   - plan metadata section: `docs({phase}-{plan}): complete [plan-name] plan`
+   - phase completion section: `docs({phase}): complete {phase-name} phase`
+8. Do not end the iteration with uncommitted changes.
+9. Stop after completing that section so the next loop starts with fresh context on the next section.
 
 Keep `@AGENTS.md` operational only. Keep all build progress and summaries in `@IMPLEMENTATION_PLAN.md`.

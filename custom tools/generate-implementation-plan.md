@@ -82,6 +82,16 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
      6. Metrics:
         - `duration`: from `$DURATION`
         - `completed`: from `$PLAN_END_TIME` using `YYYY-MM-DD`
+   - Derive file tracking from git history, not memory.
+   - Execution commit convention:
+     - task commits: `{type}({phase}-{plan}): {task-name}`
+     - plan metadata commit: `docs({phase}-{plan}): complete [plan-name] plan`
+   - For plan `01-02`, identify relevant commits with:
+     - `git log --oneline --grep="(01-02):"`
+     - optionally refine metadata with `git log --oneline --grep="^docs(01-02): complete "`
+   - Treat non-`docs(...)` matches as task commits and `docs({phase}-{plan}): complete ...` as the metadata commit.
+   - Use `git show --stat --name-status <commit>` across the task commits to determine which files were created or modified and to support any summary of what was added.
+   - If commit messages do not follow the convention exactly, use the closest matching history plus plan context and note the uncertainty in the summary instead of inventing precision.
    - Use best judgment if `subsystem` or `affects` are not explicit.
 
 6. Phase completion step (must mirror roadmap/state completion intent):
