@@ -123,7 +123,6 @@ Important inputs:
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
 - `.planning/phases/{phase-name}/`
-- [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
 - [launch-devtools.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/launch-devtools.sh)
 
 Inside each phase folder, you should have:
@@ -245,6 +244,39 @@ Why it is effective:
 - each loop has a specified task
 - the agent is constrained by explicit run, test, and verification rules
 
+### 6. Generate phase tests
+
+After the feature-building Ralph loop finishes, generate the phase test files from the summaries that were written during execution.
+
+Use:
+
+- [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
+
+Run:
+
+- your custom Cursor command for test generation
+- `/write-tests 1`
+- `/write-tests all`
+
+What it does:
+
+- reads each phase `*-SUMMARY.md`
+- uses the generated summaries to understand what was implemented, which files changed, and what design decisions were made
+- writes `tests-{phase}.md` inside each phase folder
+- turns the shipped work into user-facing tests where each test covers a feature or a meaningful part of a feature
+
+Why it is effective:
+
+- test generation happens after implementation summaries exist, so the tests reflect what was actually built
+- the tests are written from the user point of view instead of raw implementation tasks
+- it creates the explicit checklist needed for the testing loop
+
+### 7. Run the testing Ralph loop
+
+After the phase test files are generated, run a separate Ralph loop for testing.
+
+This section is the next step in the workflow and will be expanded with the testing-loop details.
+
 ## Summary
 
 The handoff is:
@@ -254,3 +286,5 @@ The handoff is:
 3. GSD creates executable phase plans
 4. Ralph creates a build-only implementation plan from the phase tasks
 5. Ralph loops through the work one item at a time with fresh context
+6. The test command writes phase test files from the generated summaries
+7. A separate Ralph loop runs the user-facing testing flow
