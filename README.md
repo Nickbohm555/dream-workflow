@@ -136,17 +136,20 @@ Inside each phase folder, you should have:
 Tool setup before Ralph:
 
 - make sure the custom Cursor test command logic is available from [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md)
-- make sure the Chrome helper is installed and executable:
+- the Chrome launcher script is already the setup
+- make sure it is executable:
   - `chmod +x "./custom tools/launch-devtools.sh"`
-- launch Chrome remote debugging for the app when browser validation is needed:
+- when browser validation is needed, the agent should launch:
   - `"./custom tools/launch-devtools.sh" http://localhost:5173`
-- confirm the DevTools endpoint is available:
+- then confirm the DevTools endpoint is available:
   - `http://127.0.0.1:9222/json/list`
+- after that, the main thing Codex needs is agent instructions telling it when to launch this script and use the browser target
 
 How Codex uses the Chrome DevTools helper:
 
 - `launch-devtools.sh` opens Chrome with remote debugging enabled on port `9222`
 - the script prints the DevTools target endpoint at `http://127.0.0.1:9222/json/list`
+- once that launcher script exists, Codex does not need a separate setup step beyond being told to run it when needed
 - Codex or the browser tool connects to that running browser target instead of guessing about frontend behavior from code alone
 - once connected, Codex can inspect the page, navigate flows, click buttons, watch visible results, and use that browser session as part of frontend validation and debugging
 - this makes browser testing in the Ralph loop real interaction with the app, not just static analysis
