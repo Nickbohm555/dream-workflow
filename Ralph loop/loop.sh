@@ -89,7 +89,13 @@ while :; do
       exit 1
     fi
   else
-    COMMIT_SUBJECT="$(head -1 "$LOOP_MSG" | tr -d '\r')"
+    NONEMPTY_LINE_COUNT="$(grep -cve '^[[:space:]]*$' "$LOOP_MSG" || true)"
+    if [ "$NONEMPTY_LINE_COUNT" -ne 1 ]; then
+      echo "Error: .loop-commit-msg must contain exactly one non-empty line."
+      exit 1
+    fi
+
+    COMMIT_SUBJECT="$(grep -v '^[[:space:]]*$' "$LOOP_MSG" | head -1 | tr -d '\r')"
     if [ -z "$COMMIT_SUBJECT" ]; then
       echo "Error: .loop-commit-msg is empty."
       exit 1
