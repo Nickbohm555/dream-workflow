@@ -12,7 +12,7 @@ tools:
 ---
 
 <objective>
-Create simple, phase-level test docs from built work summaries.
+Create phase-level test docs from built work summaries using the GSD UAT structure as the template style.
 
 If a phase number is provided, generate tests for that phase only.
 If no phase (or `all`) is provided, process phases in order, one by one.
@@ -24,6 +24,10 @@ Output files:
 
 Store each test file in its own phase folder (`.planning/phases/{phase-dir}/`).
 </objective>
+
+<template>
+@~/.cursor/get-shit-done/templates/UAT.md
+</template>
 
 <context>
 Target: $ARGUMENTS (optional)
@@ -61,32 +65,58 @@ For each target phase directory, in order:
    ls "{PHASE_DIR}"/*-SUMMARY.md 2>/dev/null
    ```
 2. Read summary content and extract user-observable outcomes/deliverables
-3. Convert outcomes into concrete manual tests (clear pass/fail checks)
+3. Convert outcomes into concrete manual tests using the UAT structure and observable expectations
 4. Write markdown file in same directory as:
    - `tests-{phase_number_without_zero_padding}.md`
    - Examples: `tests-1.md`, `tests-2.md`, `tests-10.md`
 
-Use this file template:
+Use this file template style, based on `UAT.md`:
 
 ```markdown
-# Phase {N} Tests
+---
+status: pending
+phase: {phase_slug}
+source: {summary_filename}
+started: {YYYY-MM-DDT00:00:00Z}
+updated: {YYYY-MM-DDT00:00:00Z}
+---
 
-Generated: {YYYY-MM-DD}
-Source: {summary_filename}
+## Current Test
 
-## Test Checklist
+number: 1
+name: {first test name}
+expected: |
+  {what user should observe}
+awaiting: user execution
 
-- [ ] Test 1: {expected user-visible behavior}
-- [ ] Test 2: {expected user-visible behavior}
-- [ ] Test 3: {expected user-visible behavior}
+## Tests
 
-## Notes
+### 1. {Test Name}
+expected: {observable behavior}
+result: [pending]
 
-- Scope: Phase {N}
-- Run manually and mark each checkbox
+### 2. {Test Name}
+expected: {observable behavior}
+result: [pending]
+
+### 3. {Test Name}
+expected: {observable behavior}
+result: [pending]
+
+## Summary
+
+total: {N}
+passed: 0
+issues: 0
+pending: {N}
+skipped: 0
+
+## Gaps
+
+[]
 ```
 
-If a summary has little detail, still write a minimal checklist using the best available outcomes.
+If a summary has little detail, still write a minimal UAT-style file using the best available outcomes.
 
 ## 4. Present progress as phases are processed
 
@@ -128,6 +158,7 @@ Next:
 - [ ] Iterates phases in ascending order
 - [ ] Reads phase `*-SUMMARY.md` files
 - [ ] Writes `tests-{phase}.md` into each phase directory
+- [ ] Uses UAT-style structure from `@~/.cursor/get-shit-done/templates/UAT.md`
 - [ ] Uses non-zero-padded phase number in filename (`tests-1.md`, `tests-2.md`)
 - [ ] Reports created files and skipped phases
 </success_criteria>
