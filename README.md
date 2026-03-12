@@ -101,7 +101,7 @@ Run:
 
 Example:
 
-- see [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md) in [custom tools](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools)
+- see [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md) in [custom tools](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools)
 
 Produces:
 
@@ -124,7 +124,7 @@ Important inputs:
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
 - `.planning/phases/{phase-name}/`
-- [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md)
+- [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
 - [launch-devtools.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/launch-devtools.sh)
 
 Inside each phase folder, you should have:
@@ -137,7 +137,7 @@ Inside each phase folder, you should have:
 
 - the most important thing is that the Chrome launcher script already exists in the repo so the agent can access it
 - everything else here is a sanity check before getting started
-- make sure the custom Cursor test command logic is available from [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md)
+- make sure the custom Cursor test command logic is available from [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
 - the Chrome launcher script is already the setup
 - make sure it is executable:
   - `chmod +x "./custom tools/launch-devtools.sh"`
