@@ -45,6 +45,11 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
      - Header pattern: `### <number>. <test name>`
      - Required field: `expected: <observable behavior>`
      - Optional fields: `result:`, `reported:`, `severity:`, `reason:`
+   - Also extract shared phase-level context from `## Information Needed from the Summary` when present:
+     - `what_changed`
+     - `files_changed`
+     - `code_areas`
+     - `testing_notes`
    - If a test file has no `###` test headers, treat the file as a single test using:
      - test id from filename (e.g., `test-2.md` -> `2`)
      - name from first heading or filename
@@ -65,18 +70,28 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
 6. Required section content:
    - Single goal should restate the test's `expected` outcome in one sentence.
    - Details must include:
-     - source phase and source test file
-     - original test name and id
-     - existing result/severity context when available
+      - source phase and source test file
+      - original test name and id
+      - existing result/severity context when available
+      - `what_changed` from `## Information Needed from the Summary` when present
+      - relevant `testing_notes` from `## Information Needed from the Summary` when present
+    - `Tech stack and dependencies` should be derived from `code_areas` and any implementation clues present in the test markdown.
     - Files and purpose table must include:
       - source test file path
+      - key entries from `files_changed`
       - referenced research file path when present
       - referenced context file path when present
-   - How to test should provide manual verification steps in plain language, based on the extracted expected behavior.
-   - Steps for each section must include:
-     1. Load the source test file, the phase research file, and the phase context file when present.
-     2. Treat the expected behavior in the test as the validation target.
-     3. Execute the validation steps in order and record only directly observed outcomes in `Test results`.
+    - Pull section content directly from the test markdown whenever possible:
+      - use `expected` for `Single goal`
+      - use `what_changed`, `testing_notes`, and test metadata for `Details`
+      - use `files_changed` for `Files and purpose`
+      - use `code_areas` for `Tech stack and dependencies`
+    - How to test should provide manual verification steps in plain language, based on the extracted expected behavior.
+    - Steps for each section must include:
+      1. Load the source test file, the phase research file, and the phase context file when present.
+      2. Extract `expected`, `what_changed`, `files_changed`, `code_areas`, and `testing_notes` from the test markdown and use them to build the section content.
+      3. Treat the expected behavior in the test as the validation target.
+      4. Execute the validation steps in order and record only directly observed outcomes in `Test results`.
 
 7. Empty-state behavior:
    - If no test files are found, still create `IMPLEMENTATION_PLAN.md` with header plus:
