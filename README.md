@@ -288,6 +288,8 @@ What it does:
 - reads the generated phase test files
 - creates one testing section per discovered user-facing test
 - overwrites `IMPLEMENTATION_PLAN.md` with the testing plan
+- tells each testing section to write the actual run result back into the source test markdown and keep the plan notes aligned
+- uses `.loop-commit-msg` subjects in the testing format `<plan-id>-test<test-number>` for completed test sections
 - keeps the same section-by-section structure so each test gets a clean context window
 
 Why it is effective:

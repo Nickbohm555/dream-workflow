@@ -6,7 +6,7 @@ Generate `IMPLEMENTATION_PLAN.md` from the repository planning test artifacts, p
 
 Create a deterministic testing plan document from `./.planning/phases/...` (or `./planning/phases/...` if that is what exists). Assume `IMPLEMENTATION_PLAN.md` may be missing or blank and generate it from scratch.
 
-Tests are expected to come from phase `test-*.md` files.
+Tests are expected to come from phase test files such as `*-tests.md`, `tests-*.md`, or `test-*.md`.
 
 ## Inputs to read
 
@@ -30,6 +30,10 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
 1. Always bootstrap only the minimal top-of-file header:
    - `Tests are in **required execution order** (1...n). Each section = one atomic verification. Complete one section at a time.`
    - `Current section to work on: section 1. (move +1 after each turn)`
+   - Then add the following top-level global blocks before any generated sections:
+     - `## Global Test Loading Rules`
+     - `## Global Test Recording Rules`
+     - `## Global Commit Rules`
 
 2. Section numbering:
    - Start at section `1`.
@@ -37,14 +41,18 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
 
 3. Ordering:
    - Iterate phases in ascending numeric order (`01`, `02`, ...).
-   - Within a phase, iterate `test-*.md` files in ascending order.
+   - Within a phase, iterate discovered `*-tests.md`, `tests-*.md`, and `test-*.md` files in ascending order.
    - Within each file, iterate tests in ascending test number order.
 
 4. Test extraction:
-   - Parse test blocks from `test-*.md` files:
+   - Parse test blocks from discovered phase test markdown files:
      - Header pattern: `### <number>. <test name>`
      - Required field: `expected: <observable behavior>`
      - Optional fields: `result:`, `reported:`, `severity:`, `reason:`
+   - Derive a `plan-id` for every source test file:
+     - If the filename matches `<plan-id>-tests.md` (example: `01-02-tests.md`), use that `<plan-id>`.
+     - Else if frontmatter includes both `phase` and `plan`, normalize to `<phase>-<plan>` with two-digit zero padding.
+     - Else fall back to the filename stem.
    - Also extract shared phase-level context from `## Information Needed from the Summary` when present:
      - `what_changed`
      - `files_changed`
@@ -58,13 +66,24 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
 5. One section per test:
    - For each extracted test, create exactly one section.
    - Section title format:
-     - `## Section N — <phase-slug> — Test <test-id> (Validation)`
+     - `## Section N — <phase-slug> — <plan-id> — Test <test-id> (Validation)`
    - Do not rewrite the full test contents into the section.
    - Each section should act as a pointer to the source test markdown and clearly tell the executor where to look and what to extract there.
 
 6. Required section content:
+   - `## Global Test Loading Rules` must instruct the executor to fully load the referenced source test markdown before executing the section and to use the linked research/context files when present.
+   - `## Global Test Recording Rules` must require, after each completed test:
+     - update the matching test block inside the source test markdown with the actual run result
+     - replace the placeholder `result:` value with a concise pass/fail outcome and any key observed evidence
+     - update file-level progress fields such as `Current Test`, `updated`, `Summary`, `Gaps`, or similar bookkeeping when present
+     - keep the per-section `Test results` notes in `IMPLEMENTATION_PLAN.md` aligned with what was written back to the source test markdown
+   - `## Global Commit Rules` must require:
+     - testing commits use `.loop-commit-msg` with exactly `<plan-id>-test<test-id>`
+     - summary/phase wrap-up commits still use `<plan-id>-summary` if a summary section exists
+     - the executor must not create git commits directly
    - Each section must include:
      - source phase
+     - plan id
      - source test file path
      - test id and test name
      - referenced research file path when present
@@ -77,11 +96,16 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
      - `code_areas`
      - `testing_notes`
    - Steps for each section must include:
-     1. Load the source test file, the phase research file, and the phase context file when present.
-     2. In the source test file, locate the target test by id/name.
-     3. Extract the test's `expected`, `result`, `reported`, `severity`, and `reason` fields from that test block.
-     4. Extract `what_changed`, `files_changed`, `code_areas`, and `testing_notes` from `## Information Needed from the Summary` when present.
-     5. Use the extracted information from the source test markdown to execute and record the validation. Do not duplicate the full test content into `IMPLEMENTATION_PLAN.md`.
+     1. Re-read `Global Test Loading Rules`, `Global Test Recording Rules`, and `Global Commit Rules` at the top of the document.
+     2. Load the source test file, the phase research file, and the phase context file when present.
+     3. In the source test file, locate the target test by id/name.
+     4. Extract the test's `expected`, `result`, `reported`, `severity`, and `reason` fields from that test block.
+     5. Extract `what_changed`, `files_changed`, `code_areas`, and `testing_notes` from `## Information Needed from the Summary` when present.
+     6. Use the extracted information from the source test markdown to execute and record the validation. Do not duplicate the full test content into `IMPLEMENTATION_PLAN.md`.
+     7. Update the source test markdown for this exact test with the actual result from the run, including pass/fail status and concise evidence.
+     8. Update any file-level bookkeeping in the source test markdown such as `Current Test`, `updated`, `Summary`, and `Gaps` so the file reflects the completed test.
+     9. Update this section's `Test results` notes in `IMPLEMENTATION_PLAN.md` with the same observed result summary.
+     10. Write `.loop-commit-msg` with exactly `<plan-id>-test<test-id>`.
 
 7. Empty-state behavior:
    - If no test files are found, still create `IMPLEMENTATION_PLAN.md` with header plus:
