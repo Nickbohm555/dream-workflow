@@ -66,7 +66,12 @@ Process directly in the current agent:
    ls "{PHASE_DIR}"/*-SUMMARY.md 2>/dev/null
    ```
 2. Read summary content and extract user-observable outcomes/deliverables
-3. Convert outcomes into concrete manual tests using the UAT structure and observable expectations
+3. Extract implementation context needed for testing from the summary:
+   - what was delivered
+   - files created and modified
+   - what kind of code changed (UI, API, database, auth, infra, etc.)
+   - key decisions or deviations that affect testing
+4. Convert outcomes into concrete manual tests using the UAT structure and observable expectations
 4. Write markdown file in same directory as:
    - `tests-{phase_number_without_zero_padding}.md`
    - Examples: `tests-1.md`, `tests-2.md`, `tests-10.md`
@@ -82,7 +87,12 @@ Use a 4-worker subagent pool:
 Each subagent must:
 1. Handle one `{PHASE_DIR}` only.
 2. Locate `*-SUMMARY.md` in that phase directory.
-3. Build UAT-style tests from observable outcomes.
+3. Extract summary context needed for testing:
+   - delivered behaviors
+   - files changed
+   - changed code areas/subsystems
+   - testing-relevant decisions or deviations
+4. Build UAT-style tests from observable outcomes.
 4. Write `tests-{phase_number_without_zero_padding}.md` in the same phase directory.
 5. Return structured result:
    - phase number + phase name
@@ -96,6 +106,7 @@ Generate phase tests for exactly one phase directory.
 Phase directory: {PHASE_DIR}
 Requirements:
 - Read {PHASE_DIR}/*-SUMMARY.md
+- Extract implementation context from the summary: delivered behaviors, changed files, changed code areas, relevant decisions/deviations
 - Produce UAT-style tests based on observable outcomes
 - Write {PHASE_DIR}/tests-{phase_number_without_zero_padding}.md
 - If summary missing, do not fail the batch; return skipped with reason
@@ -120,6 +131,23 @@ name: {first test name}
 expected: |
   {what user should observe}
 awaiting: user execution
+
+## Information Needed from the Summary
+
+what_changed: |
+  {short summary of what shipped in this phase}
+
+files_changed:
+- {key created or modified file}
+- {key created or modified file}
+
+code_areas:
+- {ui|api|database|auth|infra|tests|worker|cli|other}
+- {area}
+
+testing_notes:
+- {important detail from summary that tells the tester where to look}
+- {decision, deviation, or risk that affects verification}
 
 ## Tests
 
@@ -149,6 +177,7 @@ skipped: 0
 ```
 
 If a summary has little detail, still write a minimal UAT-style file using the best available outcomes.
+If summary context is available, always populate `## Information Needed from the Summary` so testers know what changed and where to look.
 
 ## 4. Commit generated test files
 
