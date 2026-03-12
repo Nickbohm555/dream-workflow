@@ -123,7 +123,7 @@ Important inputs:
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
 - `.planning/phases/{phase-name}/`
-- [launch-devtools.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/launch-devtools.sh)
+- [launch-devtools.sh](custom%20tools/launch-devtools.sh)
 
 Inside each phase folder, you should have:
 
@@ -147,10 +147,10 @@ Inside each phase folder, you should have:
 
 Use:
 
-- [AGENTS.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/AGENTS.md)
-- [IMPLEMENTATION_PLAN.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/IMPLEMENTATION_PLAN.md)
-- [PROMPT_build.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/PROMPT_build.md)
-- [loop.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/loop.sh)
+- [AGENTS.md](Ralph%20loop/AGENTS.md)
+- [IMPLEMENTATION_PLAN.md](Ralph%20loop/IMPLEMENTATION_PLAN.md)
+- [PROMPT_build.md](Ralph%20loop/PROMPT_build.md)
+- [loop.sh](Ralph%20loop/loop.sh)
 
 Purpose:
 
@@ -166,7 +166,7 @@ Run:
 
 Example:
 
-- see [generate-implementation-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/generate-implementation-plan.md) in [custom tools](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools)
+- see [generate-implementation-plan.md](custom%20tools/generate-implementation-plan.md) in [custom tools](custom%20tools)
 
 Produces:
 
@@ -180,10 +180,9 @@ What it does:
 
 Short example of what this looks like:
 
-- `Section 1 — phase-x — 01-01 — Task 1 (Execution)`
-- `Section 2 — phase-x — 01-01 — Task 2 (Execution)`
-- `Section 3 — phase-x — 01-01 — Create Summary`
-- `Section 4 — phase-x — Mark Phase Complete`
+- `Section 1 — phase-x — 01-01 (Execution)`
+- `Section 2 — phase-x — 01-02 (Execution)`
+- `Section 3 — phase-y — 02-01 (Execution)`
 
 What goes into the handoff:
 
@@ -250,7 +249,7 @@ After the feature-building Ralph loop finishes, generate the phase test files fr
 
 Use:
 
-- [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
+- [write-tests.md](custom%20tools/write-tests.md)
 
 Run:
 
@@ -278,7 +277,7 @@ After the phase test files are generated, create a new testing-only `IMPLEMENTAT
 
 Use:
 
-- [generate-testing-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/generate-testing-plan.md)
+- [generate-testing-plan.md](custom%20tools/generate-testing-plan.md)
 
 Run:
 
