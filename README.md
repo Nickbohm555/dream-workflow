@@ -264,6 +264,129 @@ Why this step matters:
 - `plan-phase` is the step that turns a roadmap phase into concrete, runnable execution prompts.
 - It also creates a back-and-forth planning loop with the user instead of silently making assumptions when research or checker feedback exposes ambiguity.
 
+### Step 9: Hand off from GSD into the Ralph loop
+
+Once `plan-phase` is done, this is where `Ralph loop/` comes into play.
+
+At that point, I already have:
+
+- the roadmap phases from GSD
+- the executable task plans for each phase
+- the phase-by-phase structure for how the work should be built
+
+The next thing I do is generate the testing view of that same work.
+
+### Step 10: Create the testing list for each phase
+
+After GSD planning, I run a custom command that works through each phase and extracts what needs to be tested.
+
+The goal is to create, for each phase:
+
+- the list of implementation tasks coming from the GSD-created plans
+- the list of features and behaviors that need to be tested for that phase
+
+So now each phase has two parallel tracks:
+
+- build tasks
+- test coverage targets
+
+This makes the execution loop much stricter. I am not only asking "what do we need to build?" I am also asking "what exactly must be verified after this phase is built?"
+
+### Step 11: Build the Ralph loop inputs
+
+The Ralph loop is driven by a small set of operating files:
+
+- [AGENTS.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/AGENTS.md)
+- [IMPLEMENTATION_PLAN.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/IMPLEMENTATION_PLAN.md)
+- [PROMPT_build.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/PROMPT_build.md)
+- [loop.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/loop.sh)
+
+How I use them:
+
+- `AGENTS.md`
+  - defines how the app should be run
+  - defines how frontend and backend testing should be run
+  - defines any required MCPs, external services, or operator notes the loop needs
+  - acts as the runtime contract for the build agent
+
+- `IMPLEMENTATION_PLAN.md`
+  - becomes the working queue
+  - references the tasks already created from the GSD phase plans
+  - also includes the test expectations and feature-verification checklist for each phase
+  - turns the planned work into a single ordered execution list
+
+- `PROMPT_build.md`
+  - tells the agent how to execute the current item
+  - keeps the loop focused on implementation plus validation
+
+- `loop.sh`
+  - runs the loop repeatedly
+  - feeds the agent the prompt, the operational rules, and the current implementation state
+  - keeps moving item by item until the queue is done
+
+### Step 12: Merge GSD tasks with phase testing requirements
+
+This is the key part of the handoff.
+
+The Ralph loop does not replace the GSD planning artifacts. It operationalizes them.
+
+What gets merged into `IMPLEMENTATION_PLAN.md`:
+
+- the task list created by GSD for a given phase
+- the set of features that must be tested for that phase
+- the commands needed to validate those features
+- any frontend and backend test instructions
+- any MCP requirements needed to run or verify the system correctly
+
+So instead of having one artifact for planning and another vague idea of testing, the Ralph loop creates one execution queue that combines:
+
+- build work
+- test work
+- run instructions
+- verification expectations
+
+### Step 13: How the Ralph loop actually runs
+
+Once that merged implementation plan exists, I work through it one item at a time.
+
+The loop behavior is:
+
+1. Read `AGENTS.md` for operational rules.
+2. Read `IMPLEMENTATION_PLAN.md` for the next task or verification item.
+3. Execute the current item using the build prompt.
+4. Run the required validation for that item.
+5. Confirm that the feature or behavior is actually tested.
+6. Mark the item complete and move to the next one.
+7. Repeat until the full list is complete.
+
+This is why the implementation plan becomes large. It is not only a build backlog. It is the combined list of:
+
+- tasks from each GSD phase
+- test requirements for each phase
+- verification steps for each feature
+
+The loop keeps iterating until everything in that combined list is completed.
+
+### Step 14: How I think about testing inside the Ralph loop
+
+I try to make testing explicit before the loop starts.
+
+That usually means writing clear instructions for:
+
+- frontend testing
+- backend testing
+- any browser or UI verification flow
+- any API or service validation flow
+- any MCPs needed to inspect, automate, or verify behavior
+
+The practical goal is that the loop should not have to guess how to test. The testing commands, environments, and tool requirements should already be stated in `AGENTS.md`, and the specific test targets should already be listed in `IMPLEMENTATION_PLAN.md`.
+
+This is the point of the Ralph loop in my workflow:
+
+- GSD decides what should be built and in what order
+- the custom test command extracts what must be tested
+- Ralph turns both into a repeatable execution loop that builds and verifies the project until the whole plan is done
+
 ## Ralph loop contents
 
 The `Ralph loop/` folder currently includes:
