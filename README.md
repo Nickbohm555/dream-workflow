@@ -115,6 +115,29 @@ Why it is effective:
 - it can process one phase or all phases in order before the Ralph loop starts
 - it keeps the testing extraction logic as a reusable Cursor command instead of an ad hoc prompt
 
+## Before Ralph starts
+
+Before starting the Ralph loop with Codex, the planning side should already have produced the full handoff set.
+
+Important inputs:
+
+- `.planning/ROADMAP.md`
+- `.planning/STATE.md`
+- `.planning/phases/{phase-name}/`
+
+Inside each phase folder, you should have:
+
+- phase `PLAN.md` files with specific scoped tasks
+- phase `RESEARCH.md` with implementation guidance for that phase when research was needed
+- one generated `tests-{phase}.md` file with the feature-level tests for that phase
+- phase `SUMMARY.md` files from completed work as the project moves forward
+
+Why this matters:
+
+- the Ralph loop starts with the roadmap, the state file, the phase tasks, the phase research, and the phase test files already defined
+- `ROADMAP.md` and `STATE.md` still matter during Ralph execution because they need to stay updated as progress moves forward
+- this is the full input set Codex needs before starting the Ralph execution loop
+
 ### 5. Build the Ralph loop inputs
 
 Use:
