@@ -123,7 +123,6 @@ Important inputs:
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`
 - `.planning/phases/{phase-name}/`
-- [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
 - [launch-devtools.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/launch-devtools.sh)
 
 Inside each phase folder, you should have:
@@ -144,7 +143,30 @@ Inside each phase folder, you should have:
   - `http://127.0.0.1:9222/json/list`
 - after that, the main thing Codex needs is agent instructions telling it when to launch this script and use the browser target
 
-### 4. Ralph loop building features
+### 4. Automating testing
+
+Use:
+
+- [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
+
+When to use it:
+
+- after you finish creating the phase plans
+- before you start the Ralph build loop
+
+What it does:
+
+- reads the phase summaries for each phase
+- generates `tests-{phase}.md` files inside the matching phase folders
+- turns phase deliverables into concrete UAT-style test coverage
+
+Why it matters:
+
+- it gives the repo a dedicated testing pass instead of leaving testing implied
+- it creates explicit phase test files that can be referenced during implementation and verification
+- it keeps testing as its own automated workflow after planning is complete
+
+### 5. Ralph loop building features
 
 Use:
 
@@ -176,6 +198,7 @@ Produces:
 What it does:
 
 - reads the roadmap, state, phase plan files, and phase research files
+- reads generated phase test files when they exist
 - converts them into one ordered execution document for the Ralph loop
 - creates one section per task, plus summary and roadmap-update steps when needed
 
@@ -189,12 +212,13 @@ Short example of what this looks like:
 What goes into the handoff:
 
 - the GSD phase tasks
+- the phase test checklists generated from summaries
 - clear frontend and backend test commands
 - any MCP requirements needed to run or verify the app
 
 Why it is effective:
 
-- it gives the Ralph loop a single ordered build queue before any separate verification loop runs
+- it merges build work and test work into one ordered execution queue
 
 #### `loop.sh`
 
@@ -224,7 +248,7 @@ It reads two files each iteration:
 
 If the app uses Docker or another runtime, specify that directly in `AGENTS.md`.
 
-### 5. Run the Ralph loop
+### 6. Run the Ralph loop
 
 Run:
 
@@ -252,5 +276,6 @@ The handoff is:
 1. GSD maps the repo
 2. GSD creates requirements and roadmap
 3. GSD creates executable phase plans
-4. Ralph creates a build-only implementation plan from the phase tasks
-5. Ralph loops through the work one item at a time with fresh context
+4. phase test files are generated from phase summaries before Ralph starts
+5. Ralph merges tasks plus testing into one implementation plan
+6. Ralph loops through the work one item at a time with fresh context

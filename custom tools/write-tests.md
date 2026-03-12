@@ -17,6 +17,8 @@ Create phase-level test docs from built work summaries using the GSD UAT structu
 If a phase number is provided, generate tests for that phase only.
 If no phase (or `all`) is provided, process all phases in ascending order using up to 4 concurrent subagents (worker pool).
 
+This workflow is intended to run after phase plans have been created, so the generated test files can be used as explicit verification inputs for later implementation work.
+
 Output files:
 - Phase 1 -> `tests-1.md`
 - Phase 2 -> `tests-2.md`
