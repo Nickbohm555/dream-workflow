@@ -52,7 +52,7 @@ If `.planning/...` does not exist, use `planning/...` with the same rules.
 
 4. Plan completion step:
    - After the final task section for each `*-PLAN.md`, append:
-     - `5. Create <plan-id>-SUMMARY.md in the plan directory using ~/.cursor/get-shit-done/templates/summary.md and the summary instructions below, then update .planning/STATE.md to the next plan.`
+     - `5. Create <plan-id>-SUMMARY.md in the plan directory by following the summary formatting and steps below, then update .planning/STATE.md to the next plan.`
 
 5. Summary creation instructions (used any time a section references `SUMMARY.md`):
    - File location:
