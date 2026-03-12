@@ -150,7 +150,20 @@ skipped: 0
 
 If a summary has little detail, still write a minimal UAT-style file using the best available outcomes.
 
-## 4. Present progress as phases are processed
+## 4. Commit generated test files
+
+After writing the test files, commit the generated changes before finishing.
+
+- If `$ARGUMENTS` is numeric, commit with:
+  - `test({normalized_phase}): generate phase tests`
+- If `$ARGUMENTS` is `all` or empty, commit with:
+  - `test(phases): generate phase tests`
+
+Stage and commit the generated test files and any directly related planning updates created by this command.
+Do not leave the command with uncommitted `tests-*.md` changes.
+If there are no file changes, do not create an empty commit.
+
+## 5. Present progress as phases are processed
 
 After each phase file is written, print:
 - phase number + phase name
@@ -159,12 +172,13 @@ After each phase file is written, print:
 
 When running `all`, print progress whenever each subagent completes, and continue dispatching queued phases automatically until complete.
 
-## 5. Final response
+## 6. Final response
 
 Return a concise completion report:
 - total phases processed
 - files created
 - any phases skipped (with reason, e.g., missing SUMMARY.md)
+- whether a git commit was created and the commit subject
 </process>
 
 <offer_next>
@@ -187,4 +201,5 @@ Processed {N} phase(s).
 - [ ] Uses UAT-style structure from `@~/.cursor/get-shit-done/templates/UAT.md`
 - [ ] Uses non-zero-padded phase number in filename (`tests-1.md`, `tests-2.md`)
 - [ ] Reports created files and skipped phases
+- [ ] Commits generated test files when changes exist
 </success_criteria>

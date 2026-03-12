@@ -255,14 +255,15 @@ Use:
 Run:
 
 - your custom Cursor command for test generation
-- `/write-tests 1`
-- `/write-tests all`
+- `/gsd-write-tests 1`
+- `/gsd-write-tests all`
 
 What it does:
 
 - reads each phase `*-SUMMARY.md`
 - uses the generated summaries to understand what was implemented, which files changed, and what design decisions were made
 - writes `tests-{phase}.md` inside each phase folder
+- commits the generated test files when changes exist
 - turns the shipped work into user-facing tests where each test covers a feature or a meaningful part of a feature
 
 Why it is effective:
