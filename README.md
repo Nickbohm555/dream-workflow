@@ -161,6 +161,109 @@ At the end of this step, the project is initialized and ready for the next GSD a
 
 This is the front end of how I complete projects: install GSD into Cursor, map the codebase, initialize the project with `new-project`, and leave the repo with concrete planning artifacts instead of loose notes.
 
+### Step 7: Run plan-phase
+
+After initialization, the next planning step is usually:
+
+- Command: `/gsd/plan-phase 1`
+- Source: [plan-phase.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/GSD%20for%20Cursor/src/commands/gsd/plan-phase.md)
+
+What it does:
+
+- It creates executable phase plans for one roadmap phase.
+- Its default flow is research, then planning, then plan verification.
+- It turns a roadmap phase into one or more `PLAN.md` execution prompts that downstream execution commands can run.
+- It can also reuse existing research, skip research, skip verification, or run in gap-closure mode from prior verification failures.
+
+What it reads before planning:
+
+- `.planning/ROADMAP.md`
+- `.planning/STATE.md`
+- `.planning/REQUIREMENTS.md` if present
+- phase `CONTEXT.md` if present
+- phase `RESEARCH.md` if present
+- phase verification artifacts in `--gaps` mode
+
+How it interacts with me:
+
+- If I do not pass a phase number, it detects the next unplanned phase.
+- If phase research already exists, it tells me it will reuse it unless I force re-research.
+- If plans already exist for the phase, it asks whether to continue planning, view them, or replan from scratch.
+- If the phase researcher gets blocked, it offers choices like giving more context, skipping research, or aborting.
+- If the planner hits a checkpoint, the command brings that checkpoint back into the main context so I can answer and continue.
+- If the plan checker finds issues, the command shows the issues, sends them back to the planner, and repeats this loop up to three times.
+- If three checker iterations still leave issues, it asks whether to force proceed, provide guidance, or abandon the plan run.
+
+What it produces:
+
+- A phase directory under `.planning/phases/`
+- A phase research file when research is used:
+  - `{phase}-RESEARCH.md`
+- One or more executable phase plans:
+  - `{phase}-{plan}-PLAN.md`
+
+What the plan files contain:
+
+- Frontmatter for wave ordering, dependencies, files modified, and autonomy
+- Tasks written as execution instructions, not vague notes
+- Verification criteria
+- `must_haves` derived from the phase goal for goal-backward checking
+
+The planning logic:
+
+1. Validate that `.planning/` exists and resolve the configured model profile.
+2. Parse the phase argument and flags.
+3. Validate the phase against `ROADMAP.md`.
+4. Create the phase directory if needed.
+5. Run phase research unless it is skipped, disabled, already present, or bypassed by `--gaps`.
+6. Inline all required context and spawn the planner.
+7. Read the created plans and send them to the plan checker.
+8. If issues are found, run a revision loop until verification passes or the retry limit is hit.
+9. Finish by presenting a wave-by-wave summary and the next execution command.
+
+### Step 8: Subagents used by plan-phase
+
+`/gsd/plan-phase` uses these subagents:
+
+- `gsd-phase-researcher`
+- `gsd-planner`
+- `gsd-plan-checker`
+
+What each one does:
+
+- `gsd-phase-researcher`
+  - Researches how to implement the specific phase well
+  - Uses current docs and ecosystem sources
+  - Writes a single phase research artifact consumed by the planner:
+    - `{phase}-RESEARCH.md`
+  - Focuses on standard stack, patterns, pitfalls, and code examples
+
+- `gsd-planner`
+  - Converts the phase into executable plan files
+  - Breaks the phase into small plans with 2 to 3 tasks where possible
+  - Builds dependency graphs and execution waves
+  - Derives `must_haves` from the phase goal
+  - Can run in standard mode, gap-closure mode, or revision mode
+
+- `gsd-plan-checker`
+  - Verifies that the plans will actually achieve the phase goal before execution
+  - Checks requirement coverage, task completeness, dependency correctness, key wiring between artifacts, scope sanity, and verification derivation
+  - Returns either `VERIFICATION PASSED` or a structured issue list for revision
+
+What comes out of the full loop:
+
+- A researched phase, if research was needed
+- A set of executable plan prompts for the phase
+- Verified dependency and wave structure for execution order
+- A checked plan set that is ready for:
+  - `/gsd-execute-phase {X}`
+
+Why this step matters:
+
+- `ROADMAP.md` is still high level.
+- `plan-phase` is the step that turns a roadmap phase into concrete, runnable execution prompts.
+- It also creates a back-and-forth planning loop with the user instead of silently making assumptions when research or checker feedback exposes ambiguity.
+
 ## Ralph loop contents
 
 The `Ralph loop/` folder currently includes:
