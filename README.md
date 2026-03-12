@@ -305,22 +305,18 @@ This uses the same clean-context, one-section-at-a-time flow, except each sectio
 
 ### 9. Summary
 
-Keep the final summary extremely short:
+At the end of the process, keep one short summary that covers the full outcome:
 
-- what was built
-- what tests were generated and run
-- any major issues or follow-up items
+1. what was built during the feature loop
+2. what phase tests were generated from the implementation summaries
+3. what was validated during the testing loop
+4. any major issues, failures, or follow-up items
 
-## Summary
+That final summary is the clean handoff at the end of the workflow:
 
-The handoff is:
-
-1. GSD maps the repo
-2. GSD creates requirements and roadmap
-3. GSD creates executable phase plans
-4. Ralph creates a build-only implementation plan from the phase tasks
-5. Ralph loops through the work one item at a time with fresh context
-6. The test command writes phase test files from the generated summaries
-7. A testing-plan command overwrites `IMPLEMENTATION_PLAN.md` with test sections
-8. Ralph runs the testing plan with the same fresh-context loop
-9. The workflow ends with a brief summary
+1. GSD maps the codebase and creates the planning files
+2. Ralph builds the implementation plan and executes the feature work one section at a time
+3. the test command generates user-facing phase tests from the summaries
+4. the testing-plan command overwrites `IMPLEMENTATION_PLAN.md` with test-only sections
+5. Ralph runs the testing plan one section at a time
+6. the workflow ends with one brief final summary of build results, test generation, validation results, and follow-up items
