@@ -1,10 +1,19 @@
 # dream-workflow
 
+![Dream Workflow banner](assets/dream-banner.svg)
+
+Dream Workflow combines GST with the Ralph loop to 100x development by pairing deep planning with fresh-context execution loops.
+
 This repo has two parts:
 
 - `GSD for Cursor/`
 - `Ralph loop/`
 - `custom commands/`
+
+## Requirements
+
+- Codex membership
+- Cursor membership
 
 The workflow is simple: use GSD for extensive planning, then hand the scoped work into Ralph for repeated fresh-context execution loops.
 
