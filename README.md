@@ -132,7 +132,6 @@ Inside each phase folder, you should have:
 - multiple `PLAN.md` files for a single phase
 - phase `RESEARCH.md` with implementation guidance for that phase when research was needed
 - one generated `tests-{phase}.md` file with the feature-level tests for that phase
-- phase `SUMMARY.md` files from completed work as the project moves forward
 
 Tool setup before Ralph:
 
