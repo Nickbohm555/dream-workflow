@@ -135,7 +135,6 @@ Inside each phase folder, you should have:
 
 - the most important thing is that the Chrome launcher script already exists in the repo so the agent can access it
 - everything else here is a sanity check before getting started
-- make sure the custom Cursor test command logic is available from [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md)
 - the Chrome launcher script is already the setup
 - make sure it is executable:
   - `chmod +x "./custom tools/launch-devtools.sh"`
