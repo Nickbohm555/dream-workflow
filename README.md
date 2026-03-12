@@ -114,30 +114,6 @@ Why it is effective:
 - it uses research, planning, and plan verification before execution
 - if the plan is not clear enough, you can run `/gsd/discuss-phase {X}` and then rerun `/gsd/plan-phase {X}` until the phase plan is right
 
-### 4. Generate phase tests
-
-Run:
-
-- your custom Cursor command for phase test generation
-- `/write-tests 1`
-- `/write-tests all`
-
-Example:
-
-- see [write-tests.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/write-tests.md) in [custom tools](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools)
-
-Produces:
-
-- `tests-1.md`, `tests-2.md`, and so on
-- one test file per phase inside that phase folder under `.planning/phases/`
-- test checklists generated from each phase `*-SUMMARY.md` based on the user-visible features and outcomes delivered in that phase, not the raw implementation tasks
-
-Why it is effective:
-
-- it converts built phase outcomes into simple manual pass/fail test checklists
-- it can process one phase or all phases in order before the Ralph loop starts
-- it keeps the testing extraction logic as a reusable Cursor command instead of an ad hoc prompt
-
 ## Before Ralph starts
 
 Before starting the Ralph loop with Codex, the planning side should already have produced the full handoff set.
@@ -154,7 +130,6 @@ Inside each phase folder, you should have:
 
 - multiple `PLAN.md` files for a single phase
 - phase `RESEARCH.md` with implementation guidance for that phase when research was needed
-- one generated `tests-{phase}.md` file with the feature-level tests for that phase
 
 **Tool setup before Ralph:**
 
@@ -170,7 +145,7 @@ Inside each phase folder, you should have:
   - `http://127.0.0.1:9222/json/list`
 - after that, the main thing Codex needs is agent instructions telling it when to launch this script and use the browser target
 
-### 5. Build the Ralph loop inputs
+### 4. Build the Ralph loop inputs
 
 Use:
 
@@ -222,7 +197,7 @@ Why it is effective:
 
 - it gives the Ralph loop a single ordered build queue before any separate verification loop runs
 
-### 6. Run the Ralph loop
+### 5. Run the Ralph loop
 
 Run:
 
@@ -250,6 +225,5 @@ The handoff is:
 1. GSD maps the repo
 2. GSD creates requirements and roadmap
 3. GSD creates executable phase plans
-4. phase test files are generated from phase summaries
-5. Ralph creates a build-only implementation plan from the phase tasks
-6. Ralph loops through the work one item at a time with fresh context
+4. Ralph creates a build-only implementation plan from the phase tasks
+5. Ralph loops through the work one item at a time with fresh context
