@@ -201,26 +201,26 @@ Produces:
 
 What it does:
 
-- reads the roadmap, state, phase plan files, phase research files, and generated phase test files
+- reads the roadmap, state, phase plan files, and phase research files
 - converts them into one ordered execution document for the Ralph loop
-- creates one section per plan task and one section per generated test
+- creates one section per plan task, plus the summary and phase-completion steps
 
 Short example of what this looks like:
 
 - `Section 1 — phase-x — 01-01 — Task 1 (Execution)`
 - `Section 2 — phase-x — 01-01 — Task 2 (Execution)`
-- `Section 3 — phase-x — tests-1 — Test 1 (Execution)`
+- `Section 3 — phase-x — 01-01 — Create Summary`
+- `Section 4 — phase-x — Mark Phase Complete`
 
 What goes into the handoff:
 
 - the GSD phase tasks
-- the phase test checklists generated from summaries
 - clear frontend and backend test commands
 - any MCP requirements needed to run or verify the app
 
 Why it is effective:
 
-- it merges build work and test work into one ordered execution queue
+- it gives the Ralph loop a single ordered build queue before any separate verification loop runs
 
 ### 6. Run the Ralph loop
 
@@ -251,5 +251,5 @@ The handoff is:
 2. GSD creates requirements and roadmap
 3. GSD creates executable phase plans
 4. phase test files are generated from phase summaries
-5. Ralph merges tasks plus testing into one implementation plan
+5. Ralph creates a build-only implementation plan from the phase tasks
 6. Ralph loops through the work one item at a time with fresh context
