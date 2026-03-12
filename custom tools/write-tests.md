@@ -144,13 +144,6 @@ Processed {N} phase(s).
 
 ### Files Created
 {one bullet per file path}
-
-### Skipped
-{none OR list phase + reason}
-
-Next:
-- Run `/gsd-verify-work {phase}` to validate interactively
-- Or open `tests-{phase}.md` and execute manually
 </offer_next>
 
 <success_criteria>
