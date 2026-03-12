@@ -4,11 +4,10 @@ description: Generate phase test markdown from SUMMARY files
 argument-hint: "[phase number | all]"
 tools:
   read: true
-- Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
+  edit: true
+  glob: true
+  grep: true
+  bash: true
 ---
 
 <objective>
