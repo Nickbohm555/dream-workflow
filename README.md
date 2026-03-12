@@ -119,8 +119,8 @@ Why it is effective:
 Run:
 
 - your custom Cursor command for phase test generation
-- `/gsd/write-tests 1`
-- `/gsd/write-tests all`
+- `/write-tests 1`
+- `/write-tests all`
 
 Example:
 
