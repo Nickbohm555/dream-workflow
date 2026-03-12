@@ -135,6 +135,8 @@ Inside each phase folder, you should have:
 
 **Tool setup before Ralph:**
 
+- the most important thing is that the Chrome launcher script already exists in the repo so the agent can access it
+- everything else here is a sanity check before getting started
 - make sure the custom Cursor test command logic is available from [test-plan.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/custom%20tools/test-plan.md)
 - the Chrome launcher script is already the setup
 - make sure it is executable:
@@ -144,22 +146,6 @@ Inside each phase folder, you should have:
 - then confirm the DevTools endpoint is available:
   - `http://127.0.0.1:9222/json/list`
 - after that, the main thing Codex needs is agent instructions telling it when to launch this script and use the browser target
-
-**How Codex uses the Chrome DevTools helper:**
-
-- `launch-devtools.sh` opens Chrome with remote debugging enabled on port `9222`
-- the script prints the DevTools target endpoint at `http://127.0.0.1:9222/json/list`
-- once that launcher script exists, Codex does not need a separate setup step beyond being told to run it when needed
-- Codex or the browser tool connects to that running browser target instead of guessing about frontend behavior from code alone
-- once connected, Codex can inspect the page, navigate flows, click buttons, watch visible results, and use that browser session as part of frontend validation and debugging
-- this makes browser testing in the Ralph loop real interaction with the app, not just static analysis
-
-**Why this matters:**
-
-- the Ralph loop starts with the roadmap, the state file, the phase tasks, the phase research, and the phase test files already defined
-- the browser validation helper should already be available before Ralph starts if frontend testing is part of the loop
-- `ROADMAP.md` and `STATE.md` still matter during Ralph execution because they need to stay updated as progress moves forward
-- this is the full input set Codex needs before starting the Ralph execution loop
 
 ### 5. Build the Ralph loop inputs
 
