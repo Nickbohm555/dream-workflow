@@ -129,7 +129,7 @@ Important inputs:
 
 Inside each phase folder, you should have:
 
-- phase `PLAN.md` files with specific scoped tasks
+- multiple phase `PLAN.md` files for a single phase, with each plan containing multiple specific scoped tasks
 - phase `RESEARCH.md` with implementation guidance for that phase when research was needed
 - one generated `tests-{phase}.md` file with the feature-level tests for that phase
 - phase `SUMMARY.md` files from completed work as the project moves forward
