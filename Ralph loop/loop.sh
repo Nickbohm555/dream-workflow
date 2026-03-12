@@ -1,35 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Usage:
-#   ./loop.sh                               # Build mode, unlimited
-#   ./loop.sh 20                            # Build mode, max 20
-#   ./loop.sh plan                          # Full planning, unlimited
-#   ./loop.sh plan 5                        # Full planning, max 5
-#   ./loop.sh plan-work "user auth"         # Scoped planning, default max 5
-#   ./loop.sh plan-work "user auth" 8       # Scoped planning, max 8
-
-MODE="build"
 PROMPT_FILE="PROMPT_build.md"
+AGENTS_FILE="AGENTS.md"
 MAX_ITERATIONS=0
-WORK_SCOPE="${WORK_SCOPE:-}"
 
-if [ "${1:-}" = "plan" ]; then
-  MODE="plan"
-  PROMPT_FILE="PROMPT_plan.md"
-  MAX_ITERATIONS="${2:-0}"
-elif [ "${1:-}" = "plan-work" ]; then
-  MODE="plan-work"
-  PROMPT_FILE="PROMPT_plan_work.md"
-  WORK_SCOPE="${WORK_SCOPE:-${2:-}}"
-  if [ -z "$WORK_SCOPE" ]; then
-    echo "Error: plan-work requires a work description."
-    echo "Usage: ./loop.sh plan-work \"description of work\" [max_iterations]"
-    exit 1
-  fi
-  MAX_ITERATIONS="${3:-5}"
-elif [[ "${1:-}" =~ ^[0-9]+$ ]]; then
+if [[ "${1:-}" =~ ^[0-9]+$ ]]; then
   MAX_ITERATIONS="$1"
+elif [ -n "${1:-}" ]; then
+  echo "Usage: ./loop.sh [max_iterations]"
+  exit 1
 fi
 
 if ! [[ "$MAX_ITERATIONS" =~ ^[0-9]+$ ]]; then
@@ -37,14 +17,6 @@ if ! [[ "$MAX_ITERATIONS" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
-CURRENT_BRANCH="$(git branch --show-current)"
-if [ "$MODE" = "plan-work" ] && { [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; }; then
-  echo "Error: plan-work should run on a work branch, not $CURRENT_BRANCH."
-  echo "Create one first, e.g. git checkout -b ralph/your-scope"
-  exit 1
-fi
-
-# Resolve agent command once per run.
 if [ -z "${AGENT_CMD:-}" ]; then
   while :; do
     read -r -p "Which agent are you using? (claude/codex): " AGENT_CHOICE
@@ -56,9 +28,6 @@ if [ -z "${AGENT_CMD:-}" ]; then
       codex)
         AGENT_CMD="codex exec --sandbox workspace-write -"
         break
-        ;;
-      cursor)
-        echo "Cursor is not supported in this script yet. Choose claude or codex."
         ;;
       *)
         echo "Invalid option. Choose claude or codex."
@@ -72,30 +41,22 @@ if [ ! -f "$PROMPT_FILE" ]; then
   exit 1
 fi
 
+if [ ! -f "$AGENTS_FILE" ]; then
+  echo "Error: agents file not found: $AGENTS_FILE"
+  exit 1
+fi
+
 ITERATION=0
 while :; do
   ITERATION=$((ITERATION + 1))
   echo "=================================================="
-  echo "Mode: $MODE | Iteration: $ITERATION | Prompt: $PROMPT_FILE"
+  echo "Ralph loop iteration: $ITERATION"
+  echo "Prompt: $PROMPT_FILE"
+  echo "Agents: $AGENTS_FILE"
   [ "$MAX_ITERATIONS" -gt 0 ] && echo "Max iterations: $MAX_ITERATIONS"
-  [ "$MODE" = "plan-work" ] && echo "Work scope: $WORK_SCOPE"
   echo "=================================================="
 
-  if [ "$MODE" = "plan-work" ]; then
-    {
-      awk -v scope="$WORK_SCOPE" '{gsub(/\$\{WORK_SCOPE\}/, scope); print}' "$PROMPT_FILE"
-      printf "\n"
-      cat AGENTS.md
-    } | eval "$AGENT_CMD"
-  else
-    cat "$PROMPT_FILE" AGENTS.md | eval "$AGENT_CMD"
-  fi
-
-  if [ -n "$(git status --porcelain 2>/dev/null || true)" ]; then
-    git add -A || true
-    git commit -m "ralph: iteration $ITERATION ($MODE)" || true
-    git push || true
-  fi
+  cat "$PROMPT_FILE" "$AGENTS_FILE" | eval "$AGENT_CMD"
 
   if [ "$MAX_ITERATIONS" -gt 0 ] && [ "$ITERATION" -ge "$MAX_ITERATIONS" ]; then
     echo "Reached max iterations ($MAX_ITERATIONS)."

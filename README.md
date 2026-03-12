@@ -144,7 +144,7 @@ Inside each phase folder, you should have:
   - `http://127.0.0.1:9222/json/list`
 - after that, the main thing Codex needs is agent instructions telling it when to launch this script and use the browser target
 
-### 4. Build the Ralph loop inputs
+### 4. Ralph loop building features
 
 Use:
 
@@ -153,11 +153,11 @@ Use:
 - [PROMPT_build.md](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/PROMPT_build.md)
 - [loop.sh](/Users/nickbohm/Desktop/Tinkering/dream-workflow/Ralph%20loop/loop.sh)
 
-Most important:
+Purpose:
 
-- `loop.sh` is the executable Bash loop
-- it primarily reads `IMPLEMENTATION_PLAN.md`
-- each loop executes one next step from that implementation plan
+- Ralph is the build automation layer after planning is finished
+- each task in the implementation plan gets its own fresh context window
+- after each task, the loop records what was built, updates summaries, and keeps roadmap progress moving forward
 
 #### Create the implementation plan
 
@@ -177,7 +177,7 @@ What it does:
 
 - reads the roadmap, state, phase plan files, and phase research files
 - converts them into one ordered execution document for the Ralph loop
-- creates one section per plan task, plus the summary and phase-completion steps
+- creates one section per task, plus summary and roadmap-update steps when needed
 
 Short example of what this looks like:
 
@@ -195,6 +195,34 @@ What goes into the handoff:
 Why it is effective:
 
 - it gives the Ralph loop a single ordered build queue before any separate verification loop runs
+
+#### `loop.sh`
+
+`loop.sh` is the executable script for the Ralph loop.
+
+It reads two files each iteration:
+
+- `PROMPT_build.md`
+- `AGENTS.md`
+
+`PROMPT_build.md` should stay simple:
+
+- read `IMPLEMENTATION_PLAN.md`
+- find the current section
+- build that section
+- run the required checks
+- update the implementation plan
+- stop so the next loop starts fresh on the next section
+
+`AGENTS.md` should stay operational only:
+
+- how to install dependencies
+- how to start and run the app
+- how to run tests, lint, and typecheck
+- how to access Chrome DevTools with `./custom tools/launch-devtools.sh [local app url]`
+- the DevTools endpoint at `http://127.0.0.1:9222/json/list`
+
+If the app uses Docker or another runtime, specify that directly in `AGENTS.md`.
 
 ### 5. Run the Ralph loop
 
