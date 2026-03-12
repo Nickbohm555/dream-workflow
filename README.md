@@ -304,20 +304,14 @@ Run the same Ralph loop again, but now against the testing-only `IMPLEMENTATION_
 
 This uses the same clean-context, one-section-at-a-time flow, except each section is now a test to execute instead of a feature to build.
 
-### 9. Summary
+### 9. Why this is effective
 
-At the end of the process, keep one short summary that covers the full outcome:
+This strategy is effective because it combines extensive planning with automation and some of the best coding agents available.
 
-1. what was built during the feature loop
-2. what phase tests were generated from the implementation summaries
-3. what was validated during the testing loop
-4. any major issues, failures, or follow-up items
+The planning side keeps the work structured, traceable, and broken into clean execution windows. The automation side keeps momentum high by turning those plans into repeatable build and testing loops. Together, that means less drift, better verification, and faster iteration without losing clarity.
 
-That final summary is the clean handoff at the end of the workflow:
+I am continuing to tweak this workflow as I go, so stay tuned as the planning, execution, and testing loops keep getting sharper.
 
-1. GSD maps the codebase and creates the planning files
-2. Ralph builds the implementation plan and executes the feature work one section at a time
-3. the test command generates user-facing phase tests from the summaries
-4. the testing-plan command overwrites `IMPLEMENTATION_PLAN.md` with test-only sections
-5. Ralph runs the testing plan one section at a time
-6. the workflow ends with one brief final summary of build results, test generation, validation results, and follow-up items
+Projects being built with this workflow:
+
+- [agent-search](https://github.com/Nickbohm555/agent-search)
